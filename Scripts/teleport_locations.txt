@@ -1,0 +1,269 @@
+LIES OF P - POCKET WATCH TELEPORT LOCATIONS
+===================================================
+
+USAGE:
+In UE4SS console, type:
+set_pocket_watch_teleport_location('<location_name>')
+
+EXAMPLES:
+set_pocket_watch_teleport_location('DLC_LD_Winter_Sea_WreckedShip_Portal')
+set_pocket_watch_teleport_location('LD_Hotel_Main')
+set_pocket_watch_teleport_location('DLC_LD_Krat_Zoo_FirstEntry')
+
+SUMMARY: 92 Base Game + 49 DLC + 51 Boss Challenges = 192 Total Locations
+
+BASE GAME LOCATIONS:
+-------------------------
+
+FACTORY (5 locations):
+  • LD_Factory_S
+  • LD_Factory_Channel
+  • LD_Factory_ControlRoom
+  • LD_Factory_BossRoom
+  • LD_Factory_Portal
+
+BOUTIQUE (3 locations):
+  • LD_Boutique_S
+  • LD_Boutique_Apt
+  • LD_Boutique_Portal
+
+MONASTERY (15 locations):
+  • LD_Monastery_A_BlackBeach
+  • LD_Monastery_A_Enterance
+  • LD_Monastery_A_OuterWall
+  • LD_Monastery_A_SeedRoom
+  • LD_Monastery_A_BrokenTower
+  • LD_Monastery_A_BossRoomReady
+  • LD_Monastery_A_BossRoom
+  • LD_Monastery_B_InnerTower
+  • LD_Monastery_B_6F
+  • LD_Monastery_B_BossRoom
+  • LD_Monastery_B_HiddenBossRoom
+  • LD_Monastery_Enter
+  • LD_Monastery_A_S
+  • LD_Monastery_Portal
+  • LD_Monastery_Portal2
+
+ARCADE (1 locations):
+  • LD_Arcade_S
+
+UNDERDARK (7 locations):
+  • LD_Underdark_S
+  • LD_Underdark_Lab
+  • LD_Underdark_Ruin_S
+  • LD_Underdark_Ruin_Enterance
+  • LD_Underdark_Ruin_BossRoom
+  • LD_Underdark_Exit
+  • LD_Underdark_End
+
+CATHEDRAL (7 locations):
+  • LD_Cathrdal_Village
+  • LD_Cathrdal_Road
+  • LD_Cathrdal_S
+  • LD_Cathrdal_Library
+  • LD_Cathrdal_BossRoom
+  • LD_Cathrdal_Portal
+  • LD_Cathrdal_Portal2
+
+HOTEL (20 locations):
+  • LD_Hotel_Main
+  • LD_Hotel_I_Main
+  • LD_Hotel_S_Enter
+  • LD_Hotel_S_Exit
+  • LD_Hotel_N_Enter
+  • LD_Hotel_N_Exit
+  • LD_Hotel_E_Enter
+  • LD_Hotel_E_Exit
+  • LD_Hotel_NW_Enter
+  • LD_Hotel_NW_Exit
+  • LD_Hotel_I_S_Enter
+  • LD_Hotel_I_S_Exit
+  • LD_Hotel_I_N_Enter
+  • LD_Hotel_I_N_Exit
+  • LD_Hotel_I_E_Enter
+  • LD_Hotel_I_E_Exit
+  • LD_Hotel_I_NW_Enter
+  • LD_Hotel_I_NW_Exit
+  • LD_Hotel_Under_Enter
+  • LD_Hotel_Under_Exit
+
+STATION (11 locations):
+  • LD_Station_Plaza
+  • LD_Station_Festival
+  • LD_Station_BossRoom
+  • LD_Station_Platform
+  • LD_Station_Lobby
+  • LD_Station_House
+  • LD_Station_Breakdown
+  • LD_Station_Street
+  • LD_Station_Street_Enter
+  • LD_Station_S
+  • LD_Station_S_Enter
+
+TOWN_HALL (2 locations):
+  • LD_TownHall_Road
+  • LD_TownHall_BossRoom
+
+EXHIBITION_HALL (5 locations):
+  • LD_ExhibitionHall_Plaza
+  • LD_ExhibitionHall_Center
+  • LD_ExhibitionHall_BossRoom
+  • LD_ExhibitionHall_Pieta
+  • LD_ExhibitionHall_Portal
+
+CULTURE_STREET (5 locations):
+  • LD_CultureStreet_S
+  • LD_CultureStreet_Subway
+  • LD_CultureStreet_Opera_S
+  • LD_CultureStreet_Opera_BossRoom
+  • LD_CultureStreet_Portal
+
+OLD_TOWN (5 locations):
+  • LD_OldTown_Pilgrimage
+  • LD_OldTown_S
+  • LD_OldTown_Bridge
+  • LD_OldTown_BossRoom
+  • LD_OldTown_Portal
+
+PUPPET_GRAVE (6 locations):
+  • LD_Puppet_Grave_S
+  • LD_Puppet_Grave_Swamp
+  • LD_Puppet_Grave_Valley
+  • LD_Puppet_Grave_Bridge
+  • LD_Puppet_Grave_BossRoom
+  • LD_Puppet_Grave_Mine
+
+
+DLC LOCATIONS:
+---------------
+
+WINTER_SEA (16 locations):
+  • DLC_LD_Winter_Sea_Enterance
+  • DLC_LD_Winter_Sea_Beach
+  • DLC_LD_Winter_Sea_BeachCave
+  • DLC_LD_Winter_Sea_FrozenSea
+  • DLC_LD_Winter_Sea_WreckedShip
+  • DLC_LD_Winter_Sea_Whale
+  • DLC_LD_Winter_Sea_LightHouse
+  • DLC_LD_Winter_Sea_Forest
+  • DLC_LD_Winter_Sea_Mansion
+  • DLC_LD_Winter_Sea_Mansion_Basement
+  • DLC_LD_Winter_Sea_Mansion_Library
+  • DLC_LD_Winter_Sea_Mansion_2F -- THE LAST BATTLE
+  • DLC_LD_Winter_Sea_Boss
+  • DLC_LD_Winter_Sea_Portal
+  • DLC_LD_Winter_Sea_WreckedShip_Portal
+  • DLC_LD_Winter_Sea_Mansion_Portal
+
+ZOO (13 locations):
+  • DLC_LD_Krat_Zoo_FirstEntry
+  • DLC_LD_Krat_Zoo_Main
+  • DLC_LD_Krat_Zoo_RainForest
+  • DLC_LD_Krat_Zoo_Savana
+  • DLC_LD_Krat_Zoo_Swamp
+  • DLC_LD_Krat_Zoo_GreenHouse
+  • DLC_LD_Krat_Zoo_BossRoom
+  • DLC_LD_Krat_Zoo_Garden
+  • DLC_LD_Krat_Zoo_Tram
+  • DLC_LD_Krat_Zoo_Enter_1st
+  • DLC_LD_Krat_Zoo_Enter_2nd
+  • DLC_LD_Krat_Zoo_Exit_1st
+  • DLC_LD_Krat_Zoo_Exit_2nd
+
+UNDERGROUND_LAB (6 locations):
+  • DLC_LD_Underground_Lab_Enterance
+  • DLC_LD_Underground_Lab_Control
+  • DLC_LD_Underground_Lab_ControlRoom
+  • DLC_LD_Underground_Lab_Laboratory
+  • DLC_LD_Underground_Lab_Portal
+  • DLC_LD_Underground_Lab_CoolingDevice
+
+DESERTED_HOTEL (4 locations):
+  • DLC_LD_Deserted_Hotel_Main
+  • DLC_LD_Deserted_Hotel_Portal_1st
+  • DLC_LD_Deserted_Hotel_Portal_2nd
+  • DLC_LD_Deserted_Hotel_Lab_Lift
+
+SPECIAL_HOTELS (2 locations):
+  • DLC_LD_AbyssHotel
+  • DLC_LD_TwilightHotel
+
+UNDERGROUND_RUIN (8 locations):
+  • DLC_LD_Underground_Ruin_Enterance
+  • DLC_LD_Underground_Ruin_Mine
+  • DLC_LD_Underground_Ruin_GreenHunter
+  • DLC_LD_Underground_Ruin_Dock
+  • DLC_LD_Underground_Ruin_Boss
+  • DLC_LD_Underground_Ruin_BossRoom
+  • DLC_LD_Underground_Ruin_Portal
+  • DLC_LD_Underground_Ruin_Boss_Portal
+
+
+BOSS CHALLENGES:
+-----------------
+(Chronological order from Chapter 1 to Chapter 18)
+  • DLC_BC_CH01_Boss - Parade Master 
+  • DLC_BC_CH01_Boss_Clear
+  • DLC_BC_CH01_Boss_Portal
+  • DLC_BC_CH02_Boss - Scrapped Watchman
+  • DLC_BC_CH02_Boss_Clear
+  • DLC_BC_CH02_Boss_Portal
+  • DLC_BC_CH03_Boss
+  • DLC_BC_CH03_Boss_Clear
+  • DLC_BC_CH03_Boss_Portal
+  • DLC_BC_CH04_Boss
+  • DLC_BC_CH04_Boss_Clear
+  • DLC_BC_CH04_Boss_Portal
+  • DLC_BC_CH05_Boss
+  • DLC_BC_CH05_Boss_Clear
+  • DLC_BC_CH05_Boss_Portal
+  • DLC_BC_CH06_Boss
+  • DLC_BC_CH06_Boss_Clear
+  • DLC_BC_CH06_Boss_Portal
+  • DLC_BC_CH07_Boss
+  • DLC_BC_CH07_Boss_Clear
+  • DLC_BC_CH07_Boss_Portal
+  • DLC_BC_CH08_Boss
+  • DLC_BC_CH08_Boss_Clear
+  • DLC_BC_CH08_Boss_Portal
+  • DLC_BC_CH09_Boss
+  • DLC_BC_CH09_Boss_Clear
+  • DLC_BC_CH09_Boss_Portal
+  • DLC_BC_CH11_Boss
+  • DLC_BC_CH11_Boss_Clear
+  • DLC_BC_CH11_Boss_Portal
+  • DLC_BC_CH12_Boss -
+  • DLC_BC_CH12_Boss_Clear
+  • DLC_BC_CH12_Boss_Portal
+  • DLC_BC_CH13_Boss - Simon Manus 
+  • DLC_BC_CH13_Boss_Clear
+  • DLC_BC_CH13_Boss_Portal
+  • DLC_BC_CH14_Boss
+  • DLC_BC_CH14_Boss_Clear
+  • DLC_BC_CH14_Boss_Portal
+  • DLC_BC_CH15_Boss
+  • DLC_BC_CH15_Boss_Clear
+  • DLC_BC_CH15_Boss_Portal
+  • DLC_BC_CH16_Boss
+  • DLC_BC_CH16_Boss_Clear
+  • DLC_BC_CH16_Boss_Portal
+  • DLC_BC_CH17_Boss
+  • DLC_BC_CH17_Boss_Clear
+  • DLC_BC_CH17_Boss_Portal
+  • DLC_BC_CH18_Boss
+  • DLC_BC_CH18_Boss_Clear
+  • DLC_BC_CH18_Boss_Portal
+
+
+SEARCH TIPS:
+------------
+Look for these patterns:
+  Boss Fights: *BossRoom*, *Boss*
+  Entry Points: *Enter*, *Enterance*
+  Fast Travel: *Portal*
+  Main Areas: *Main*, *S*
+  DLC Content: DLC_*
+  Specific Areas: *Hotel*, *Station*, *Zoo*, *Winter_Sea*
+
+
+Generated: 2025-07-13 10:07:13
