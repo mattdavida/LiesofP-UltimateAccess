@@ -1,6 +1,6 @@
 # MattsMod - Ultimate Boss & DLC Access for Lies of P
 
-**Instant access to any boss fight + complete DLC integration for Lies of P**
+**Instant access to any boss fight + complete DLC integration + external debugging for Lies of P**
 
 [![Lua](https://img.shields.io/badge/language-Lua-blue.svg)](https://www.lua.org/)
 [![UE4SS](https://img.shields.io/badge/framework-UE4SS-green.svg)](https://github.com/UE4SS-RE/RE-UE4SS)
@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides instant access to boss challenges, complete DLC integration, and advanced save game manipulation. Built with professional-grade Lua scripting, it offers both hotkey convenience and powerful console commands.
+MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides instant access to boss challenges, complete DLC integration, advanced save game manipulation, and external debugging capabilities. Built with professional-grade Lua scripting, it offers both hotkey convenience and powerful console commands with intelligent fallback systems.
 
 ## ✨ Key Features
 
@@ -25,17 +25,26 @@ MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides
 - **Reward item unlocking** (F5)
 - **Seamless integration** with base game progression
 
-### 🌍 Universal Teleportation
+### 🌍 Advanced Teleportation System
 - **200+ game locations** organized by area
+- **Smart fallback system** - auto-sets pocket watch target if direct teleport fails
+- **Pocket watch override hooks** - seamless teleport redirection
 - **Dynamic location discovery** and export (F6)
 - **Smart categorization** (Hotel, Station, Zoo, Winter Sea, etc.)
 - **Universal teleport command** for any location
+- **Global functions** for other mods to integrate
 
 ### 🛠️ Advanced Save Manipulation
 - **Humanity control** (F7 sets to 99)
 - **NG+ round management**
 - **Save game data inspection**
 - **Character progression modification**
+
+### 🔧 External Debugging & Development
+- **Live code execution** via LuaReplDebug
+- **Socket-based communication** with Python tools
+- **Real-time mod development** and testing
+- **Professional debugging interface**
 
 ## 🚀 Quick Start
 
@@ -45,9 +54,10 @@ MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides
 
 ### Installation
 1. Install UE4SS in your Lies of P directory
-2. Copy `main.lua` to `LiesofP/Binaries/Win64/Mods/MattsMod/Scripts/`
-3. Add `MattsMod: 1` to your `mods.txt`
-4. Launch the game
+2. Clone this repository: `git clone [your-repo-url] MattsMod`
+3. Clone the shared framework: `git clone [shared-framework-url] MattsMod/shared`
+4. Add `MattsMod: 1` to your `mods.txt`
+5. Launch the game
 
 ### Basic Usage
 ```lua
@@ -55,6 +65,7 @@ MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides
 goto_boss 1                    -- Teleport to Parade Master
 list_boss_challenges           -- Show all available bosses
 teleport_to LD_Hotel_Main      -- Teleport to any location
+set_teleport_target LD_Hotel_Main -- Set pocket watch override
 set_ng_plus_round 10          -- Set NG+ round
 
 -- Hotkeys (in-game)
@@ -78,6 +89,7 @@ F7  -- Set humanity to 99
 | Command | Description | Example |
 |---------|-------------|---------|
 | `teleport_to <location>` | Teleport to any game location | `teleport_to DLC_LD_Winter_Sea_Portal` |
+| `set_teleport_target <location>` | Set pocket watch override target | `set_teleport_target LD_Hotel_Main` |
 
 ### Save Manipulation
 | Command | Description | Example |
@@ -112,34 +124,45 @@ Complete coverage of all 18 boss challenges:
 
 ## 🏗️ Technical Implementation
 
-### Architecture Highlights
-- **Modular function design** with clear separation of concerns
-- **Type-annotated Lua** for UE4SS API integration
-- **Robust error handling** with user-friendly messages
-- **Dynamic game data discovery** and categorization
-- **Professional CLI interface** with contextual help
-
-### Key Technical Features
+### Smart Teleportation System
+The mod features an intelligent fallback system:
 ```lua
--- Dynamic location discovery from game assets
-local teleport_object_info_asset = FindAllOf('TeleportObjectInfoAsset')
-
--- Direct save game manipulation
-local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
-character_data.NewGamePlus_Round = target_round
-
--- Smart location categorization with pattern matching
-elseif string.match(spot, "^DLC_BC_CH%d+_") then
-    table.insert(grouped.boss_challenges, spot)
+-- Direct teleport if action available
+if action_teleport_start then
+    bp.Payload.TeleportTarget = target
+    bp:Start()
+else
+    -- Auto-set pocket watch target
+    SetTeleportTarget(target)
+    -- User just needs to use pocket watch
+end
 ```
 
-### Error Handling & UX
-- Graceful failure with informative error messages
-- Automatic help display for incomplete commands
-- Contextual warnings for problematic game states
-- Consistent logging through Utils framework
+### Pocket Watch Override Hooks
+Seamless teleport redirection using UE4SS hooks:
+```lua
+RegisterHook("BP_Action_Teleport_Start_C:OnStart", function(self)
+    if teleport_target ~= FName("") then
+        self.Payload.TeleportTarget = teleport_target
+    end
+end)
+```
 
-## 📊 Location Categories
+### Global Functions for External Debugger
+```lua
+-- Available functions for UE4SS external debugger/REPL tool
+TeleportTo(destination)           -- Direct teleportation from external tool
+SetTeleportTarget(target)         -- Set pocket watch target from external tool  
+GetGroupedTeleportSpots()         -- Get categorized locations for external analysis
+```
+
+### External Debugging
+Real-time debugging via socket communication:
+- **LuaReplDebug** - Live code execution
+- **Socket libraries** - Network communication
+- **Python integration** - External tool support
+
+## 📊 Location Categories & Boss Arena Handling
 
 The mod organizes 200+ game locations into logical categories:
 
@@ -148,23 +171,53 @@ The mod organizes 200+ game locations into logical categories:
 - **Boss Challenges**: All 18 chapter-based boss arenas
 - **Special Locations**: Portals, entry points, main areas
 
-## 🔧 Development
+### Boss Arena Limitation & Workaround
+**From boss arenas**: Commands automatically set pocket watch target instead of direct teleport
+```
+goto_boss 5               # Sets target, prompts to use pocket watch
+# Use pocket watch -> teleports to Chapter 5 boss
+```
 
-### Code Quality Features
-- Type annotations for UE4SS API
-- Consistent naming conventions (snake_case)
-- Comprehensive error handling
-- Clean module dependency management
-- Professional documentation standards
+**Alternative**: Teleport to hotel first, then to destination
+```
+teleport_to LD_Hotel_Main  # Go to safe location first
+goto_boss 5               # Now works directly
+```
+
+## 🔧 Development & Dependencies
+
+### Shared Framework
+This mod depends on a shared framework containing:
+- **UEHelpers** - UE4SS utility functions
+- **Utils** - Logging and common utilities  
+- **LuaReplDebug** - External debugging system
+- **Socket libraries** - Network communication (LuaSocket by Diego Nehab)
+- **Type definitions** - 700+ UE4 class definitions
+- **dkjson** - JSON parsing (by David Kolf)
 
 ### File Structure
 ```
 MattsMod/
 ├── Scripts/
-│   ├── main.lua                 # Core implementation (502 lines)
-│   └── teleport_locations.txt   # Generated location reference
-└── .luarc.json                  # Lua development configuration
+│   ├── main.lua                 # Core implementation (600+ lines)
+│   ├── teleport_locations.txt   # Generated location reference
+│   └── socket/                  # Socket communication files
+├── shared/                      # Shared framework (git submodule)
+│   ├── UEHelpers/
+│   ├── Utils/
+│   ├── LuaReplDebug/
+│   ├── types/
+│   └── socket.lua
+└── README.md
 ```
+
+### Code Quality Features
+- **Type annotations** for UE4SS API
+- **Consistent naming** conventions (snake_case)
+- **Comprehensive error handling** with user-friendly messages
+- **Clean module dependency** management
+- **Professional documentation** standards
+- **Hook-based architecture** for seamless integration
 
 ## 🎮 Use Cases
 
@@ -172,7 +225,8 @@ MattsMod/
 - **Content Creators**: Quick setup for boss showcase videos  
 - **Challenge Runners**: Easy access for themed runs
 - **Casual Players**: Replay favorite boss fights
-- **Modders/Developers**: Location discovery and save manipulation tools
+- **Modders/Developers**: Location discovery, save manipulation, and debugging tools
+- **Python Developers**: External tool integration via socket communication
 
 ## ⚠️ Important Notes
 
@@ -180,14 +234,19 @@ MattsMod/
 - **Use pocket watch first** - teleportation requires stargazer activation
 - **DLC access requires save/reload** after NG+ manipulation
 - Some bosses have specific unlock requirements (noted in warnings)
+- **Hooks require mod refresh** after game start for proper initialization
 
 ## 🤝 Contributing
 
-This project demonstrates professional Lua development practices and UE4SS integration techniques. Feel free to study the code for educational purposes.
+This project demonstrates professional Lua development practices and UE4SS integration techniques. The external debugging system allows for real-time development and testing.
 
 ## 📜 License
 
 This project is shared freely for educational and personal use. The code serves as a demonstration of game modding techniques and Lua scripting capabilities.
+
+**Dependencies:**
+- **LuaSocket**: MIT License (Diego Nehab and contributors)
+- **dkjson**: MIT License (David Kolf)
 
 ---
 

@@ -191,7 +191,7 @@ SPECIAL_HOTELS (2 locations):
 UNDERGROUND_RUIN (8 locations):
   • DLC_LD_Underground_Ruin_Enterance
   • DLC_LD_Underground_Ruin_Mine
-  • DLC_LD_Underground_Ruin_GreenHunter
+  • DLC_LD_Underground_Ruin_GreenHunter -- BOSS FIGHT
   • DLC_LD_Underground_Ruin_Dock
   • DLC_LD_Underground_Ruin_Boss
   • DLC_LD_Underground_Ruin_BossRoom

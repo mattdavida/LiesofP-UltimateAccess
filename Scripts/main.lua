@@ -1,6 +1,11 @@
 UEHelpers = require("UEHelpers.UEHelpers")
 Utils = require("Utils.Utils")
+require("LuaReplDebug.LuaReplDebug")
+local teleport_target = FName("")
 
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+-- KEYBINDS 
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
 local function teleport_to_dlc_start_area_from_pocketwatch()
     ---@class ULCharacterSaveGame : ULSaveGame
     local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
@@ -56,17 +61,15 @@ local function give_dlc_reward_items()
 end
 
 
-local function get_teleport_spots()
+function get_teleport_spots()
     local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
     if save_game_data then
         local character_data = save_game_data.CharacterSaveData
         local spots = {}
 
-        print("SAVE DATA: " .. tostring(save_game_data:GetFullName()))
         local teleport_object_info_asset = FindAllOf('TeleportObjectInfoAsset')
         if teleport_object_info_asset then
             for _, tp in pairs(teleport_object_info_asset) do
-                print('TELEPORT OBJECT: ' .. tostring(tp:GetFullName()))
                 local teleport_object_array = tp.ContentInfoDB._TeleportObject_array
                 if teleport_object_array then
                     for i = 1, teleport_object_array:GetArrayNum() do
@@ -121,12 +124,12 @@ local function group_teleport_spots(spots)
             table.insert(grouped.test_locations, spot)
             categorized = true
 
-        -- Boss challenges (separate from other DLC content)
+            -- Boss challenges (separate from other DLC content)
         elseif string.match(spot, "^DLC_BC_CH%d+_") then
             table.insert(grouped.boss_challenges, spot)
             categorized = true
 
-        -- Base game locations
+            -- Base game locations
         elseif string.match(spot, "^LD_Hotel_") then
             table.insert(grouped.base_game.hotel, spot)
             categorized = true
@@ -167,7 +170,7 @@ local function group_teleport_spots(spots)
             table.insert(grouped.base_game.monastery, spot)
             categorized = true
 
-        -- DLC locations (excluding boss challenges)
+            -- DLC locations (excluding boss challenges)
         elseif string.match(spot, "^DLC_LD_Krat_Zoo_") then
             table.insert(grouped.dlc_content.zoo, spot)
             categorized = true
@@ -211,7 +214,8 @@ local function write_file_teleport_spots_for_pocket_watch()
             print("❌ ERROR: Could not create teleport_locations.txt - " .. tostring(err))
             return
         end
-        print('Writing to file: ' .. 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Lies of P\\LiesofP\\Binaries\\Win64\\teleport_locations.txt')
+        print('Writing to file: ' ..
+            'C:\\Program Files (x86)\\Steam\\steamapps\\common\\Lies of P\\LiesofP\\Binaries\\Win64\\teleport_locations.txt')
         -- Write header and usage instructions
         file:write("LIES OF P - POCKET WATCH TELEPORT LOCATIONS\n")
         file:write("=" .. string.rep("=", 50) .. "\n\n")
@@ -294,14 +298,14 @@ end
 
 
 
-local function set_humanity_to_99(FullCommand, Parameters, Ar)   
+local function set_humanity_to_99(FullCommand, Parameters, Ar)
     local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
     if save_game_data then
         local character_data = save_game_data.CharacterSaveData
         character_data.HumanityLevel = 99
     end
     return true
-end 
+end
 
 -- first get pocket watch - activate first stargazer - use pocket watch - then press f2
 -- if you used f3 first to get dlc item - the dlc butterfly sequence will play and the
@@ -318,7 +322,43 @@ RegisterKeyBind(Key.F7, {}, set_humanity_to_99)
 
 
 
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+-- GLOBAL FUNCTIONS 
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+function TeleportTo(destination)
+    print("Teleporting to " .. tostring(destination))
+    local location = tostring(destination)
+    ---@class UBP_Action_Teleport_Start_C : ULAction_LoopAnim
+    local action_teleport_start = FindAllOf('BP_Action_Teleport_Start_C')
+    if action_teleport_start then
+        for _, bp in pairs(action_teleport_start) do
+            local dlc_entry_target = FName(location)
+            bp.Payload.TeleportTarget = dlc_entry_target
+            -- LActPayload_Teleport - see current targets in live view
+            bp:Start()
+            break
+        end
+    else
+        print("No action teleport start found -- travel to most recent stargazer with pocket watch first")
+    end
+end
 
+function SetTeleportTarget(target)
+    teleport_target = FName(target)
+    print("Teleport target set to: " .. tostring(teleport_target:ToString()))
+end
+
+
+function GetGroupedTeleportSpots()
+    local spots = get_teleport_spots()
+    if spots then
+        return group_teleport_spots(spots)
+    end
+    return nil
+end
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+-- CONSOLE COMMANDS 
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
 local function teleport_to(FullCommand, Parameters, Ar)
     Utils.Log(Ar, "Teleporting to " .. tostring(Parameters[1]))
     local location = tostring(Parameters[1])
@@ -332,29 +372,31 @@ local function teleport_to(FullCommand, Parameters, Ar)
             bp:Start()
             break
         end
-    else 
-        Utils.Log(Ar, "No action teleport start found -- travel to most recent stargazer with pocket watch first") 
+    else
+        Utils.Log(Ar, "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " .. location)
+        SetTeleportTarget(location)
+
     end
     return true
 end
 
-
-local function set_ng_plus_round(FullCommand, Parameters, Ar)   
+local function set_ng_plus_round(FullCommand, Parameters, Ar)
     local round = tostring(Parameters[1])
     local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
     if save_game_data then
         local character_data = save_game_data.CharacterSaveData
         character_data.NewGamePlus_Round = round
-        Utils.Log(Ar, "New Game Plus Round set to: " .. round .. " - save to title and reload game for the change to take effect")
+        Utils.Log(Ar,
+            "New Game Plus Round set to: " .. round .. " - save to title and reload game for the change to take effect")
     end
     return true
-end 
+end
 
 local function list_boss_challenges(FullCommand, Parameters, Ar)
     -- Boss name mapping based on chapter order
     local boss_names = {
         [1] = "Parade Master",
-        [2] = "Scrapped Watchman", 
+        [2] = "Scrapped Watchman",
         [3] = "Kings Flame, Fuoco",
         [4] = "Fallen Archbishop Andreus",
         [5] = "Eldest of the Black Rabbit Brotherhood",
@@ -362,21 +404,21 @@ local function list_boss_challenges(FullCommand, Parameters, Ar)
         [7] = "Champion Victor",
         [8] = "Green Monster of the Swamp",
         [9] = "Corrupted Parade Master",
-        [11] = "Black Rabbit Brotherhood", --CH11 -- 10 is missing 
-        [12] = "Laxasia the Complete", --CH12
-        [13] = "Simon Manus, Arm of God", --CH13
-        [14] = "Nameless Puppet", --CH14 -- Puppet Master -- NOT WORKING  - Can't trigger yet - even with humanity + 99 when refusing to give heart
-        [15] = "Markiona, Puppeteer of Death", 
-        [16] = "Anguished Guardian of the Ruins" ,
-        [17] = "Arlecchino the Blood Artist" , -- need to have visited DLC_LD_Winter_Sea_Mansion_2F before the teleport will work
-        [18] = "Two-faced Overseer" ,
+        [11] = "Black Rabbit Brotherhood", --CH11 -- 10 is missing
+        [12] = "Laxasia the Complete",     --CH12
+        [13] = "Simon Manus, Arm of God",  --CH13
+        [14] = "Nameless Puppet",          --CH14 -- Puppet Master -- NOT WORKING  - Can't trigger yet - even with humanity + 99 when refusing to give heart
+        [15] = "Markiona, Puppeteer of Death",
+        [16] = "Anguished Guardian of the Ruins",
+        [17] = "Arlecchino the Blood Artist", -- need to have visited DLC_LD_Winter_Sea_Mansion_2F before the teleport will work
+        [18] = "Two-faced Overseer",
     }
-    
+
     local spots = get_teleport_spots()
-    
+
     if spots then
         local grouped_spots = group_teleport_spots(spots)
-        
+
         -- Filter and sort boss challenges
         local filtered_bosses = {}
         for _, spot in pairs(grouped_spots.boss_challenges) do
@@ -385,21 +427,21 @@ local function list_boss_challenges(FullCommand, Parameters, Ar)
                 table.insert(filtered_bosses, spot)
             end
         end
-        
+
         -- Sort by chapter number
         table.sort(filtered_bosses, function(a, b)
             local ch_a = tonumber(string.match(a, "DLC_BC_CH(%d+)_Boss"))
             local ch_b = tonumber(string.match(b, "DLC_BC_CH(%d+)_Boss"))
             return ch_a < ch_b
         end)
-        
+
         Utils.Log(Ar, "=== BOSS CHALLENGES ===")
         Utils.Log(Ar, "Example: teleport_to <teleport_id>")
         Utils.Log(Ar, "========================")
         for _, spot in pairs(filtered_bosses) do
             -- Extract chapter number
             local chapter = tonumber(string.match(spot, "DLC_BC_CH(%d+)_Boss"))
-            
+
             -- Get boss name if we have it, otherwise use generic format
             local boss_name = boss_names[chapter]
             if boss_name then
@@ -408,7 +450,8 @@ local function list_boss_challenges(FullCommand, Parameters, Ar)
                 if chapter == 14 then
                     Utils.Log(Ar, "        WARNING: Boss 14 not working unless specific game requirements met")
                 elseif chapter == 17 then
-                    Utils.Log(Ar, "        WARNING: Need to have visited DLC_LD_Winter_Sea_Mansion_2F before teleport will work")
+                    Utils.Log(Ar,
+                        "        WARNING: Need to have visited DLC_LD_Winter_Sea_Mansion_2F before teleport will work")
                     Utils.Log(Ar, "        Try: teleport_to DLC_LD_Winter_Sea_Mansion_2F")
                 end
             else
@@ -420,11 +463,19 @@ local function list_boss_challenges(FullCommand, Parameters, Ar)
     return true
 end
 
+local function set_teleport_target(FullCommand, Parameters, Ar)
+    local target = tostring(Parameters[1])
+    teleport_target = FName(target)
+    Utils.Log(Ar, "Teleport target set to: " .. tostring(teleport_target:ToString()))
+    return true
+end
+
+
 local function goto_boss(FullCommand, Parameters, Ar)
     -- Boss name mapping based on chapter order - matches list_boss_challenges
     local boss_names = {
         [1] = "Parade Master",
-        [2] = "Scrapped Watchman", 
+        [2] = "Scrapped Watchman",
         [3] = "Kings Flame, Fuoco",
         [4] = "Fallen Archbishop Andreus",
         [5] = "Eldest of the Black Rabbit Brotherhood",
@@ -432,16 +483,16 @@ local function goto_boss(FullCommand, Parameters, Ar)
         [7] = "Champion Victor",
         [8] = "Green Monster of the Swamp",
         [9] = "Corrupted Parade Master",
-        [11] = "Black Rabbit Brotherhood", --CH11 -- 10 is missing 
-        [12] = "Laxasia the Complete", --CH12
-        [13] = "Simon Manus, Arm of God", --CH13
-        [14] = "Nameless Puppet", --CH14 -- NOT WORKING  - Can't trigger yet - even with humanity + 99 when refusing to give heart
-        [15] = "Markiona, Puppeteer of Death", 
-        [16] = "Anguished Guardian of the Ruins" ,
-        [17] = "Arlecchino the Blood Artist" , -- need to have visited DLC_LD_Winter_Sea_Mansion_2F before the teleport will work
-        [18] = "Two-faced Overseer" ,
+        [11] = "Black Rabbit Brotherhood", --CH11 -- 10 is missing
+        [12] = "Laxasia the Complete",     --CH12
+        [13] = "Simon Manus, Arm of God",  --CH13
+        [14] = "Nameless Puppet",          --CH14 -- NOT WORKING  - Can't trigger yet - even with humanity + 99 when refusing to give heart
+        [15] = "Markiona, Puppeteer of Death",
+        [16] = "Anguished Guardian of the Ruins",
+        [17] = "Arlecchino the Blood Artist", -- need to have visited DLC_LD_Winter_Sea_Mansion_2F before the teleport will work
+        [18] = "Two-faced Overseer",
     }
-    
+
     -- Check if chapter parameter was provided
     if not Parameters[1] then
         Utils.Log(Ar, "Usage: goto_boss <chapter_number>")
@@ -450,22 +501,22 @@ local function goto_boss(FullCommand, Parameters, Ar)
         list_boss_challenges(FullCommand, Parameters, Ar)
         return true
     end
-    
+
     -- Convert parameter to number
     local chapter = tonumber(Parameters[1])
-    
+
     -- Validate chapter number
     if not chapter or chapter < 1 or chapter > 18 or chapter == 10 then
         Utils.Log(Ar, "Invalid chapter number. Available chapters: 1-9, 11-18 (CH10 is missing)")
         return true
     end
-    
+
     -- Build the boss location ID
     local boss_location = string.format("DLC_BC_CH%02d_Boss", chapter)
-    
+
     -- Get boss name for feedback
     local boss_name = boss_names[chapter] or "Unknown Boss"
-    
+
     -- Special warnings for problematic bosses
     if chapter == 14 then
         Utils.Log(Ar, "WARNING: Boss 14 not working unless specific game requirements met")
@@ -473,9 +524,9 @@ local function goto_boss(FullCommand, Parameters, Ar)
         Utils.Log(Ar, "WARNING: Need to have visited DLC_LD_Winter_Sea_Mansion_2F before teleport will work")
         Utils.Log(Ar, "Try: teleport_to DLC_LD_Winter_Sea_Mansion_2F")
     end
-    
+
     Utils.Log(Ar, string.format("Teleporting to Chapter %d: %s (%s)", chapter, boss_name, boss_location))
-    
+
     -- Use the same teleportation logic as teleport_to
     local action_teleport_start = FindAllOf('BP_Action_Teleport_Start_C')
     if action_teleport_start then
@@ -485,12 +536,16 @@ local function goto_boss(FullCommand, Parameters, Ar)
             bp:Start()
             break
         end
-    else 
-        Utils.Log(Ar, "No action teleport start found -- travel to most recent stargazer with pocket watch first") 
+    else
+        Utils.Log(Ar, "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " .. boss_location)
+        SetTeleportTarget(boss_location)
     end
-    
+
     return true
 end
+
+
+
 
 
 
@@ -498,4 +553,25 @@ RegisterConsoleCommandHandler("teleport_to", teleport_to)
 RegisterConsoleCommandHandler("set_ng_plus_round", set_ng_plus_round)
 RegisterConsoleCommandHandler("list_boss_challenges", list_boss_challenges)
 RegisterConsoleCommandHandler("goto_boss", goto_boss)
+RegisterConsoleCommandHandler("set_teleport_target", set_teleport_target)
 
+
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+-- HOOKS -- THESE REALLY NEED TO BE SET CONDITIONALLY -- CURRENTLY ERRORS ON START AND YOU MUST
+--       -- REFRESH THE MOD TO GET THEM TO WORK AFTER GAME START
+-- ///////////////////////////////////////////////////////////////////////////////////////////////
+RegisterHook("/Game/Blueprints/ActionBP/BP_Action_Teleport_Start.BP_Action_Teleport_Start_C:OnStart", function(self)
+    if teleport_target ~= FName("") then
+        print("🎯 Pocket watch teleport intercepted -- ORIGINAL TARGET: " ..
+            tostring(self['As LAct Payload Teleport'].Payload.TeleportTarget:ToString()))
+        local new_target = teleport_target
+        self['As LAct Payload Teleport'].Payload.TeleportTarget = new_target
+        print("🎯 Pocket watch teleport intercepted -- NEW TARGET: " ..
+            tostring(self['As LAct Payload Teleport'].Payload.TeleportTarget:ToString()))
+    end
+end)
+
+RegisterHook("/Game/Blueprints/ActionBP/BP_Action_Teleport_Start.BP_Action_Teleport_Start_C:OnStop", function(self)
+        print("🎯 Pocket watch teleport intercepted -- ENDING")
+        teleport_target = FName("")
+end)
