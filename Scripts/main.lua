@@ -298,11 +298,13 @@ end
 
 
 
-local function set_humanity_to_99(FullCommand, Parameters, Ar)
+local function set_humanity_to_max(FullCommand, Parameters, Ar)
     local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
     if save_game_data then
         local character_data = save_game_data.CharacterSaveData
-        character_data.HumanityLevel = 99
+        character_data.HumanityLevel = 10
+        character_data.AcquisitionHumanity = 99999
+        Utils.Log(Ar, "Humanity set to max. save to title and reload game for the change to take effect")
     end
     return true
 end
@@ -318,7 +320,7 @@ RegisterKeyBind(Key.F4, {}, give_dlc_key_item_start_base_game)
 -- get Monad's sword to play through game from start - run cmd - get item
 RegisterKeyBind(Key.F5, {}, give_dlc_reward_items)
 RegisterKeyBind(Key.F6, {}, write_file_teleport_spots_for_pocket_watch)
-RegisterKeyBind(Key.F7, {}, set_humanity_to_99)
+RegisterKeyBind(Key.F7, {}, set_humanity_to_max)
 
 
 
@@ -543,6 +545,7 @@ local function goto_boss(FullCommand, Parameters, Ar)
 
     return true
 end
+
 
 
 
