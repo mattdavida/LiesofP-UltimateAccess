@@ -4,7 +4,7 @@ require("LuaReplDebug.LuaReplDebug")
 local teleport_target = FName("")
 
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
--- KEYBINDS 
+-- KEYBINDS
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
 local function teleport_to_dlc_start_area_from_pocketwatch()
     ---@class ULCharacterSaveGame : ULSaveGame
@@ -322,10 +322,8 @@ RegisterKeyBind(Key.F5, {}, give_dlc_reward_items)
 RegisterKeyBind(Key.F6, {}, write_file_teleport_spots_for_pocket_watch)
 RegisterKeyBind(Key.F7, {}, set_humanity_to_max)
 
-
-
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
--- GLOBAL FUNCTIONS 
+-- GLOBAL FUNCTIONS
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
 function TeleportTo(destination)
     print("Teleporting to " .. tostring(destination))
@@ -350,7 +348,6 @@ function SetTeleportTarget(target)
     print("Teleport target set to: " .. tostring(teleport_target:ToString()))
 end
 
-
 function GetGroupedTeleportSpots()
     local spots = get_teleport_spots()
     if spots then
@@ -358,8 +355,9 @@ function GetGroupedTeleportSpots()
     end
     return nil
 end
+
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
--- CONSOLE COMMANDS 
+-- CONSOLE COMMANDS
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
 local function teleport_to(FullCommand, Parameters, Ar)
     Utils.Log(Ar, "Teleporting to " .. tostring(Parameters[1]))
@@ -375,9 +373,10 @@ local function teleport_to(FullCommand, Parameters, Ar)
             break
         end
     else
-        Utils.Log(Ar, "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " .. location)
+        Utils.Log(Ar,
+            "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " ..
+            location)
         SetTeleportTarget(location)
-
     end
     return true
 end
@@ -539,7 +538,9 @@ local function goto_boss(FullCommand, Parameters, Ar)
             break
         end
     else
-        Utils.Log(Ar, "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " .. boss_location)
+        Utils.Log(Ar,
+            "No action teleport start found -- setting teleport target. please try to use pocket watch now to go to: " ..
+            boss_location)
         SetTeleportTarget(boss_location)
     end
 
@@ -548,7 +549,44 @@ end
 
 
 
+local function set_hair_color(FullCommand, Parameters, Ar)
+    if not Parameters[1] then
+        Utils.Log(Ar, "Usage: set_hair_color <color_number>")
+        Utils.Log(Ar, "Available colors:")
+        Utils.Log(Ar, "0: Basic")
+        Utils.Log(Ar, "1: Long")
+        Utils.Log(Ar, "2: WLong")
+        Utils.Log(Ar, "3: WBasic")
+        Utils.Log(Ar, "4: Max")
+        Utils.Log(Ar, "5: Default")
+        return true
+    end
 
+    local color = tonumber(Parameters[1])
+    local save_game_data = UEHelpers.GetPlayerController().Character.PlayingGameData
+    if save_game_data then
+        local character_data = save_game_data.CharacterSaveData
+
+        -- colors
+        ---@type ELHairCategoryType
+        local ELHairCategoryType = {
+            [0] = "E_HAIR_BASIC",
+            [1] = "E_HAIR_LONG",
+            [2] = "E_HAIR_WLONG",
+            [3] = "E_HAIR_WBASIC",
+            [4] = "E_MAX",
+            [5] = "E_DEFAULT",
+        }
+
+        if save_game_data then
+            Utils.Log(Ar, 'Hair Color Before: ' .. tostring(ELHairCategoryType[character_data.HairCategoryType]))
+            character_data.HairCategoryType = color
+            Utils.Log(Ar, 'Hair Color After: ' .. tostring(ELHairCategoryType[character_data.HairCategoryType]))
+            Utils.Log(Ar, "Save to title and reload game for the change to take effect")
+        end
+    end
+    return true
+end
 
 
 
@@ -557,6 +595,7 @@ RegisterConsoleCommandHandler("set_ng_plus_round", set_ng_plus_round)
 RegisterConsoleCommandHandler("list_boss_challenges", list_boss_challenges)
 RegisterConsoleCommandHandler("goto_boss", goto_boss)
 RegisterConsoleCommandHandler("set_teleport_target", set_teleport_target)
+RegisterConsoleCommandHandler("set_hair_color", set_hair_color)
 
 
 -- ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -575,6 +614,6 @@ RegisterHook("/Game/Blueprints/ActionBP/BP_Action_Teleport_Start.BP_Action_Telep
 end)
 
 RegisterHook("/Game/Blueprints/ActionBP/BP_Action_Teleport_Start.BP_Action_Teleport_Start_C:OnStop", function(self)
-        print("🎯 Pocket watch teleport intercepted -- ENDING")
-        teleport_target = FName("")
+    print("🎯 Pocket watch teleport intercepted -- ENDING")
+    teleport_target = FName("")
 end)
