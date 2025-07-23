@@ -1,7 +1,6 @@
 local Utils = require("Utils.Utils")
 local UEHelpers = require("UEHelpers.UEHelpers")
 local ModGlobals = require("mod_globals")
--- require("mod_globals")
 
 local function register_func()
     RegisterHook("/Game/Blueprints/ActionBP/BP_Action_Teleport_Start.BP_Action_Teleport_Start_C:OnStart", function(self)
