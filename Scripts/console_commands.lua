@@ -2,7 +2,6 @@ local Utils = require("Utils.Utils")
 local UEHelpers = require("UEHelpers.UEHelpers")
 local TeleportApi = require("teleport")
 local ModGlobals = require("mod_globals")
--- require("mod_globals")
 
 local function teleport_to(FullCommand, Parameters, Ar)
     Utils.Log(Ar, "Teleporting to " .. tostring(Parameters[1]))
