@@ -1,6 +1,6 @@
-# MattsMod - Ultimate Boss & DLC Access for Lies of P
+# LiesofP-UltimateAccess - Complete Game Enhancement Suite
 
-**Instant access to any boss fight + complete DLC integration + external debugging for Lies of P**
+**Comprehensive gameplay enhancements, boss/DLC access, save manipulation, and debugging tools for Lies of P**
 
 [![Lua](https://img.shields.io/badge/language-Lua-blue.svg)](https://www.lua.org/)
 [![UE4SS](https://img.shields.io/badge/framework-UE4SS-green.svg)](https://github.com/UE4SS-RE/RE-UE4SS)
@@ -8,7 +8,7 @@
 
 ## 🎯 Overview
 
-MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides instant access to boss challenges, complete DLC integration, advanced save game manipulation, and external debugging capabilities. Built with professional-grade Lua scripting, it offers both hotkey convenience and powerful console commands with intelligent fallback systems.
+LiesofP-UltimateAccess is a comprehensive UE4SS-based modification for Lies of P that provides instant access to boss challenges, complete DLC integration, advanced save game manipulation, gameplay enhancements, and external debugging capabilities. Built with professional-grade modular Lua architecture, it offers both hotkey convenience and powerful console commands with intelligent fallback systems.
 
 ## ✨ Key Features
 
@@ -39,12 +39,18 @@ MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides
 - **NG+ round management**
 - **Save game data inspection**
 - **Character progression modification**
+- **Soul/Ergo multiplier system** with configurable rates
 
 ### 🔧 External Debugging & Development
 - **Live code execution** via LuaReplDebug
 - **Socket-based communication** with Python tools
 - **Real-time mod development** and testing
 - **Professional debugging interface**
+
+### 🎮 Enhanced Gameplay Features
+- **Better jump mechanics** (F8) - Enhanced velocity and reduced animation times
+- **Hair color customization** via console commands
+- **Advanced movement controls**
 
 ## 🚀 Quick Start
 
@@ -54,10 +60,9 @@ MattsMod is a comprehensive UE4SS-based modification for Lies of P that provides
 
 ### Installation
 1. Install UE4SS in your Lies of P directory
-2. Clone this repository: `git clone [your-repo-url] MattsMod`
-3. Clone the shared framework: `git clone [shared-framework-url] MattsMod/shared`
-4. Add `MattsMod: 1` to your `mods.txt`
-5. Launch the game
+2. Clone this repository: `git clone [your-repo-url] LiesofP-UltimateAccess`
+3. Add `LiesofP-UltimateAccess: 1` to your `mods.txt`
+4. Launch the game
 
 ### Basic Usage
 ```lua
@@ -67,6 +72,7 @@ list_boss_challenges           -- Show all available bosses
 teleport_to LD_Hotel_Main      -- Teleport to any location
 set_teleport_target LD_Hotel_Main -- Set pocket watch override
 set_ng_plus_round 10          -- Set NG+ round
+set_souls_multiply 2.0        -- Set soul collection multiplier
 
 -- Hotkeys (in-game)
 F2  -- Teleport to DLC start area
@@ -75,6 +81,7 @@ F4  -- Reset to base game state
 F5  -- Unlock DLC reward items
 F6  -- Export all teleport locations
 F7  -- Set humanity to 99
+F8  -- Enable better jump mechanics
 ```
 
 ## 📋 Commands Reference
@@ -95,6 +102,8 @@ F7  -- Set humanity to 99
 | Command | Description | Example |
 |---------|-------------|---------|
 | `set_ng_plus_round <num>` | Set NG+ round | `set_ng_plus_round 5` |
+| `set_souls_multiply <multiplier>` | Set soul collection multiplier | `set_souls_multiply 10.0` |
+| `set_hair_color <color>` | Change hair color (0-5) | `set_hair_color 2` |
 
 ## 🎭 Boss Roster
 
@@ -124,6 +133,22 @@ Complete coverage of all 18 boss challenges:
 
 ## 🏗️ Technical Implementation
 
+### Modular Architecture
+The mod features a clean, professional modular architecture:
+
+```
+Scripts/
+├── main.lua                 # Module loader and orchestration
+├── mod_globals.lua          # Global variables and shared functions
+├── teleport.lua             # Complete teleportation API and location management
+├── console_commands.lua     # All console command handlers
+├── keybinds.lua             # Hotkey bindings for various features
+├── ergo_multiplier.lua      # Soul/Ergo collection multiplier system
+├── better_jumps.lua         # Enhanced jumping mechanics
+├── teleport_locations.txt   # Generated location reference (192 locations)
+└── socket/                  # Socket communication files
+```
+
 ### Smart Teleportation System
 The mod features an intelligent fallback system:
 ```lua
@@ -142,13 +167,21 @@ end
 Seamless teleport redirection using UE4SS hooks:
 ```lua
 RegisterHook("BP_Action_Teleport_Start_C:OnStart", function(self)
-    if teleport_target ~= FName("") then
-        self.Payload.TeleportTarget = teleport_target
+    if TeleportTarget ~= FName("") then
+        self.Payload.TeleportTarget = TeleportTarget
     end
 end)
 ```
 
-### Global Functions for External Debugger
+### Module Dependencies
+- **mod_globals.lua** - Core global variables and shared functions
+- **teleport.lua** - Location management and teleportation API
+- **console_commands.lua** - Command handlers requiring globals and teleport API
+- **keybinds.lua** - Hotkey bindings using teleport and jump modules
+- **ergo_multiplier.lua** - Soul collection enhancement hooks
+- **better_jumps.lua** - Movement and animation modifications
+
+### Global Functions for External Integration
 ```lua
 -- Available functions for UE4SS external debugger/REPL tool
 TeleportTo(destination)           -- Direct teleportation from external tool
@@ -166,9 +199,9 @@ Real-time debugging via socket communication:
 
 The mod organizes 200+ game locations into logical categories:
 
-- **Base Game Areas**: Hotel, Station, Factory, Cathedral, Old Town, etc.
-- **DLC Content**: Krat Zoo, Deserted Hotel, Underground Lab, Winter Sea
-- **Boss Challenges**: All 18 chapter-based boss arenas
+- **Base Game Areas**: Hotel (20), Station (11), Factory (5), Cathedral (7), Old Town (5), etc.
+- **DLC Content**: Krat Zoo (13), Winter Sea (16), Underground Lab (6), Deserted Hotel (4)
+- **Boss Challenges**: All 18 chapter-based boss arenas (51 total including variants)
 - **Special Locations**: Portals, entry points, main areas
 
 ### Boss Arena Limitation & Workaround
@@ -186,32 +219,32 @@ goto_boss 5               # Now works directly
 
 ## 🔧 Development & Dependencies
 
-### Shared Framework
-This mod depends on a shared framework containing:
-- **UEHelpers** - UE4SS utility functions
-- **Utils** - Logging and common utilities  
-- **LuaReplDebug** - External debugging system
+### Dependencies
+This mod requires the UE4SS framework and utilizes:
+- **UEHelpers** - UE4SS utility functions for player/controller access
+- **Utils** - Logging and common utilities for clean console output
+- **LuaReplDebug** - External debugging system for live development
 - **Socket libraries** - Network communication (LuaSocket by Diego Nehab)
-- **Type definitions** - 700+ UE4 class definitions
-- **dkjson** - JSON parsing (by David Kolf)
 
-### File Structure
+### Project Structure
 ```
-MattsMod/
+LiesofP-UltimateAccess/
 ├── Scripts/
-│   ├── main.lua                 # Core implementation (600+ lines)
-│   ├── teleport_locations.txt   # Generated location reference
+│   ├── main.lua                 # Module loader and orchestration
+│   ├── mod_globals.lua          # Global variables and shared functions  
+│   ├── teleport.lua             # Complete teleportation API and location management
+│   ├── console_commands.lua     # All console command handlers
+│   ├── keybinds.lua             # Hotkey bindings for various features
+│   ├── ergo_multiplier.lua      # Soul/Ergo collection multiplier system
+│   ├── better_jumps.lua         # Enhanced jumping mechanics
+│   ├── teleport_locations.txt   # Generated location reference (192 locations)
 │   └── socket/                  # Socket communication files
-├── shared/                      # Shared framework (git submodule)
-│   ├── UEHelpers/
-│   ├── Utils/
-│   ├── LuaReplDebug/
-│   ├── types/
-│   └── socket.lua
+├── LICENSE
 └── README.md
 ```
 
 ### Code Quality Features
+- **Modular architecture** with clear separation of concerns
 - **Type annotations** for UE4SS API
 - **Consistent naming** conventions (snake_case)
 - **Comprehensive error handling** with user-friendly messages
